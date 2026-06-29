@@ -1,64 +1,92 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Imagen de OneDrive</title>
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      color: #222;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prueba API Gemini</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <p class="eyebrow">Demo estatica para GitHub Pages</p>
+        <h1>Prueba API Gemini</h1>
+        <p>
+          Pega tu API key, escribe un prompt y opcionalmente sube una imagen.
+          Esta demo puede probar texto, vision e imagen generada/editada segun el modelo elegido.
+        </p>
+      </section>
 
-    main {
-      width: min(1000px, 92vw);
-      text-align: center;
-      background: #fff;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    }
+      <section class="card warning">
+        <h2>Importante</h2>
+        <p>
+          Esta pagina es solo para pruebas. La API key se usa desde el navegador y puede ser visible en DevTools.
+          No la dejes escrita en el codigo ni en GitHub. Para produccion usa un backend, por ejemplo Supabase Edge Functions.
+        </p>
+      </section>
 
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      border: 1px solid #ddd;
-    }
+      <section class="grid">
+        <form id="geminiForm" class="card form-card">
+          <label>
+            API key de Gemini
+            <input id="apiKey" type="password" placeholder="AIza..." autocomplete="off" required />
+          </label>
 
-    .fallback {
-      margin-top: 16px;
-      font-size: 14px;
-    }
+          <label>
+            Modo de prueba
+            <select id="mode">
+              <option value="generateContent">Texto / Vision: generateContent</option>
+              <option value="interactions">Imagen: Interactions API</option>
+            </select>
+          </label>
 
-    a {
-      color: #0067b8;
-    }
-  </style>
-</head>
-<body>
-  <main>
-    <h1>Imagen de OneDrive</h1>
+          <label>
+            Modelo
+            <input id="model" type="text" value="gemini-2.5-flash" />
+            <small id="modelHint">Para texto/vision puedes probar gemini-2.5-flash. Para imagen prueba gemini-3.1-flash-image si tu cuenta lo permite.</small>
+          </label>
 
-    <iframe
-      src="https://everisgroup-my.sharepoint.com/personal/aquiroza_emeal_nttdata_com/_layouts/15/embed.aspx?UniqueId=b1c79d27-1996-4e91-9cab-18dac28e733e"
-      width="600"
-      height="400"
-      frameborder="0">
-    </iframe>
+          <label>
+            Prompt
+            <textarea id="prompt" rows="8" required>Analiza esta imagen como si fuera una prenda para una app de closet virtual. Indica tipo de prenda, color principal, problemas de captura y recomendaciones para convertirla en un asset frontal limpio.</textarea>
+          </label>
 
-    <p class="fallback">
-      Si la imagen no carga, abre el archivo directamente aquí:<br />
-      <a href="https://everisgroup-my.sharepoint.com/:i:/g/personal/aquiroza_emeal_nttdata_com/IQAnncexlhmRTpyrGNrCjnM-ARKbUstpG9gybMJuRmq8TLk?e=F5Jd7h" target="_blank" rel="noopener noreferrer">
-        Ver imagen en OneDrive
-      </a>
-    </p>
-  </main>
-</body>
+          <label>
+            Imagen opcional
+            <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" />
+          </label>
+
+          <div id="previewWrap" class="preview hidden">
+            <img id="preview" alt="Vista previa" />
+            <button type="button" id="clearImage" class="secondary">Quitar imagen</button>
+          </div>
+
+          <button id="sendBtn" type="submit">Enviar a Gemini</button>
+        </form>
+
+        <section class="card result-card">
+          <div class="result-header">
+            <h2>Resultado</h2>
+            <button id="copyBtn" type="button" class="secondary">Copiar texto</button>
+          </div>
+
+          <div id="status" class="status">Listo para probar.</div>
+          <pre id="textOutput" class="output"></pre>
+
+          <div id="generatedImageWrap" class="generated hidden">
+            <h3>Imagen devuelta</h3>
+            <img id="generatedImage" alt="Imagen generada por Gemini" />
+            <a id="downloadImage" class="download" download="gemini-output.png">Descargar imagen</a>
+          </div>
+
+          <details>
+            <summary>Ver JSON crudo</summary>
+            <pre id="rawOutput" class="raw"></pre>
+          </details>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
 </html>
